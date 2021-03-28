@@ -10,9 +10,6 @@ using Algorand.Client;
 using Algorand.V2.Model;
 using Account = Algorand.Account;
 
-// extension awaiter/methods can be used by this namespace
-using Cysharp.Threading.Tasks;
-
 public class AlgorandManager : Singleton<AlgorandManager>
 {
     [SerializeField]
@@ -35,6 +32,7 @@ public class AlgorandManager : Singleton<AlgorandManager>
         PayPlayerWithAlgorandLoop();
     }
 
+    //https://randompoison.github.io/posts/unity-async/
     private void PayPlayerWithAlgorandLoop()
     {
         Debug.Log("Starting Algorand Transaction.");
@@ -59,9 +57,9 @@ public class AlgorandManager : Singleton<AlgorandManager>
             var supply = algodApiInstance.GetSupply();
             Debug.Log("Total Algorand Supply: " + supply.TotalMoney);
             Debug.Log("Online Algorand Supply: " + supply.OnlineMoney);
-            var task = algodApiInstance.GetSupplyAsync();
-            task.Wait();
-            Debug.Log("Total Algorand Supply(Async): " + task.Result.TotalMoney);
+            //var task = await algodApiInstance.GetSupplyAsync();
+            //task.Wait();
+            //Debug.Log("Total Algorand Supply(Async): " + task.Result.TotalMoney);
         }
         catch (ApiException e)
         {
@@ -113,6 +111,6 @@ public class AlgorandManager : Singleton<AlgorandManager>
             // This is generally expected, but should give us an informative error message.
             Debug.LogError("Exception when calling algod#rawTransaction: " + e.Message);
         }
-        Debug.Log("You have successefully arrived the end of this test, please press and key to exist.");
+        Debug.Log("Algorand transaction to Player completed.");
     }
 }
