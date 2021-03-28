@@ -20,5 +20,7 @@ public class CoinCollider : MonoBehaviour
     {
         GameObject otherObj = collider.gameObject;
         Debug.Log("Triggered with: " + otherObj);
+        //Star Algorand Transaction
+        AlgorandManager.Instance.PayPlayerWithAlgorand();
     }
 }
