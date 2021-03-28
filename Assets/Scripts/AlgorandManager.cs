@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using UnityAsync;
 
 //ALGORAND
 using Algorand;
@@ -33,7 +32,7 @@ public class AlgorandManager : Singleton<AlgorandManager>
         PayPlayerWithAlgorandLoop();
     }
 
-    async void PayPlayerWithAlgorandLoop()
+    private void PayPlayerWithAlgorandLoop()
     {
         Debug.Log("Starting Algorand Transaction.");
         string ALGOD_API_ADDR = "https://testnet-algorand.api.purestake.io/ps2";
@@ -57,6 +56,13 @@ public class AlgorandManager : Singleton<AlgorandManager>
             var supply = algodApiInstance.GetSupply();
             Debug.Log("Total Algorand Supply: " + supply.TotalMoney);
             Debug.Log("Online Algorand Supply: " + supply.OnlineMoney);
+            /*
+             * 
+             * //This will execute MyMethod on the main Unity thread
+               var task = UnityTaskUtil.RunOnUnityThreadAsync(MyMethod);
+               //A task is returned that you can await
+               await task;
+             */
             var task = algodApiInstance.GetSupplyAsync();
             task.Wait();
             Debug.Log("Total Algorand Supply(Async): " + task.Result.TotalMoney);
@@ -112,7 +118,5 @@ public class AlgorandManager : Singleton<AlgorandManager>
             Debug.LogError("Exception when calling algod#rawTransaction: " + e.Message);
         }
         Debug.Log("You have successefully arrived the end of this test, please press and key to exist.");
-
-        await new WaitForFrames(1);
     }
 }
