@@ -9,6 +9,7 @@ using Algorand.V2;
 using Algorand.Client;
 using Algorand.V2.Model;
 using Account = Algorand.Account;
+using Gameframe.Async.Coroutines;
 
 public class AlgorandManager : Singleton<AlgorandManager>
 {
@@ -29,7 +30,14 @@ public class AlgorandManager : Singleton<AlgorandManager>
     /// </summary>
     public void PayPlayerWithAlgorand()
     {
+        //var task = CoroutineRunner.RunAsync(PlayerWithAlgorandLoopCoroutine());
+        StartCoroutine(PlayerWithAlgorandLoopCoroutine());
+    }
+
+    IEnumerator PlayerWithAlgorandLoopCoroutine()
+    {
         PayPlayerWithAlgorandLoop();
+        yield return null;
     }
 
     //https://randompoison.github.io/posts/unity-async/
