@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AlgorandManager : MonoBehaviour
+public class AlgorandManager : Singleton<AlgorandManager>
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    protected string m_PlayerName;
 
-    // Update is called once per frame
-    void Update()
+    //Public method
+    public string GetPlayerName()
     {
-        
+        return m_PlayerName;
     }
 }
