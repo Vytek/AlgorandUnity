@@ -64,6 +64,9 @@
             
              @return a DER byte array, null otherwise.
         </member>
+        <member name="T:Org.BouncyCastle.Asn1.Asn1EncodableVector">
+            Mutable class for building ASN.1 constructed objects such as SETs or SEQUENCEs.
+        </member>
         <member name="T:Org.BouncyCastle.Asn1.Asn1InputStream">
             a general purpose ASN.1 decoder - note: this class differs from the
             others in that it returns null after it has read the last object in
@@ -285,14 +288,20 @@
         <member name="F:Org.BouncyCastle.Asn1.BC.BCObjectIdentifiers.newHope">
             NewHope
         </member>
+        <!-- Badly formed XML comment ignored for member "F:Org.BouncyCastle.Asn1.BC.BCObjectIdentifiers.bc_ext" -->
+        <member name="T:Org.BouncyCastle.Asn1.BC.LinkedCertificate">
+            Extension to tie an alternate certificate to the containing certificate.
+            <pre>
+                LinkedCertificate := SEQUENCE {
+                    digest        DigestInfo,                   -- digest of PQC certificate
+                    certLocation  GeneralName,                  -- location of PQC certificate
+                    certIssuer    [0] Name OPTIONAL,            -- issuer of PQC cert (if different from current certificate)
+                    cACerts       [1] GeneralNames OPTIONAL,    -- CA certificates for PQC cert (one of more locations)
+            }
+            </pre>
+        </member>
         <member name="T:Org.BouncyCastle.Asn1.BerNull">
             A BER Null object.
-        </member>
-        <member name="M:Org.BouncyCastle.Asn1.BerOctetString.ToBytes(System.Collections.IEnumerable)">
-            convert a vector of octet strings into a single byte string
-        </member>
-        <member name="M:Org.BouncyCastle.Asn1.BerOctetString.#ctor(System.Byte[])">
-            <param name="str">The octets making up the octet string.</param>
         </member>
         <member name="M:Org.BouncyCastle.Asn1.BerOctetString.GetEnumerator">
             return the DER octets that make up this string.
@@ -2314,6 +2323,12 @@
         <member name="P:Org.BouncyCastle.Asn1.DerInteger.PositiveValue">
             in some cases positive values Get crammed into a space,
             that's not quite big enough...
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.DerInteger.IsMalformed(System.Byte[])">
+             Apply the correct validation for an INTEGER primitive following the BER rules.
+            
+             @param bytes The raw encoding of the integer.
+             @return true if the (in)put fails this validation.
         </member>
         <member name="T:Org.BouncyCastle.Asn1.DerNull">
             A Null object.
@@ -4476,6 +4491,15 @@
         <member name="F:Org.BouncyCastle.Asn1.Pkcs.PkcsObjectIdentifiers.Sha512_256WithRSAEncryption">
             PKCS#1: 1.2.840.113549.1.1.16 
         </member>
+        <member name="F:Org.BouncyCastle.Asn1.Pkcs.PkcsObjectIdentifiers.IdAlgAeadChaCha20Poly1305">
+             <pre>
+             id-alg-AEADChaCha20Poly1305 OBJECT IDENTIFIER ::=
+             { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
+                pkcs9(9) smime(16) alg(3) 18 }
+            
+             AEADChaCha20Poly1305Nonce ::= OCTET STRING (SIZE(12))
+             </pre>
+        </member>
         <member name="F:Org.BouncyCastle.Asn1.Pkcs.PkcsObjectIdentifiers.IdAADecryptKeyID">
             PKCS#9: 1.2.840.113549.1.9.16.2.37 - <a href="https://tools.ietf.org/html/rfc4108#section-2.2.5">RFC 4108</a> 
         </member>
@@ -4778,10 +4802,6 @@
                         }
             </pre>
         </member>
-        <member name="M:Org.BouncyCastle.Asn1.Tsp.MessageImprint.GetInstance(System.Object)">
-            @param o
-            @return a MessageImprint object.
-        </member>
         <member name="M:Org.BouncyCastle.Asn1.Tsp.MessageImprint.ToAsn1Object">
             <pre>
                MessageImprint ::= SEQUENCE  {
@@ -4969,6 +4989,17 @@
              @param verbose  if true, dump out the contents of octet and bit strings.
              @return  the resulting string.
         </member>
+        <member name="T:Org.BouncyCastle.Asn1.X500.AttributeTypeAndValue">
+            Holding class for the AttributeTypeAndValue structures that make up an RDN.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.X500.AttributeTypeAndValue.ToAsn1Object">
+            <pre>
+            AttributeTypeAndValue ::= SEQUENCE {
+                      type         OBJECT IDENTIFIER,
+                      value        ANY DEFINED BY type }
+            </pre>
+            @return a basic ASN.1 object representation.
+        </member>
         <member name="M:Org.BouncyCastle.Asn1.X500.DirectoryString.ToAsn1Object">
             <pre>
              DirectoryString ::= CHOICE {
@@ -4978,6 +5009,36 @@
                utf8String                  UTF8String (SIZE (1..MAX)),
                bmpString                   BMPString (SIZE (1..MAX))  }
             </pre>
+        </member>
+        <member name="T:Org.BouncyCastle.Asn1.X500.Rdn">
+            Holding class for a single Relative Distinguished Name (RDN).
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.X500.Rdn.#ctor(Org.BouncyCastle.Asn1.DerObjectIdentifier,Org.BouncyCastle.Asn1.Asn1Encodable)">
+             Create a single valued RDN.
+            
+             @param oid RDN type.
+             @param value RDN value.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.X500.Rdn.#ctor(Org.BouncyCastle.Asn1.X500.AttributeTypeAndValue[])">
+             Create a multi-valued RDN.
+            
+             @param aAndVs attribute type/value pairs making up the RDN
+        </member>
+        <member name="P:Org.BouncyCastle.Asn1.X500.Rdn.Count">
+             Return the number of AttributeTypeAndValue objects in this RDN,
+            
+             @return size of RDN, greater than 1 if multi-valued.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.X500.Rdn.ToAsn1Object">
+                     * <pre>
+                     * RelativeDistinguishedName ::=
+                     *                     SET OF AttributeTypeAndValue
+            
+                     * AttributeTypeAndValue ::= SEQUENCE {
+                     *        type     AttributeType,
+                     *        value    AttributeValue }
+                     * </pre>
+                     * @return this object as its ASN1Primitive type
         </member>
         <member name="T:Org.BouncyCastle.Asn1.X509.AccessDescription">
             The AccessDescription object.
@@ -5841,6 +5902,30 @@
               
             </pre>
         </member>
+        <member name="T:Org.BouncyCastle.Asn1.X509.OtherName">
+            The OtherName object.
+            <pre>
+            OtherName ::= SEQUENCE {
+                 type-id    OBJECT IDENTIFIER,
+                 value      [0] EXPLICIT ANY DEFINED BY type-id }
+            </pre>
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.X509.OtherName.GetInstance(System.Object)">
+            OtherName factory method.
+            @param obj the object used to construct an instance of <code>
+            OtherName</code>. It must be an instance of <code>OtherName
+            </code> or <code>ASN1Sequence</code>.
+            @return the instance of <code>OtherName</code> built from the
+            supplied object.
+            @throws java.lang.IllegalArgumentException if the object passed
+            to the factory is not an instance of <code>OtherName</code> or something that
+            can be converted into an appropriate <code>ASN1Sequence</code>.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.X509.OtherName.#ctor(Org.BouncyCastle.Asn1.DerObjectIdentifier,Org.BouncyCastle.Asn1.Asn1Encodable)">
+            Base constructor.
+            @param typeID the type of the other name.
+            @param value the ANY object that represents the value.
+        </member>
         <member name="T:Org.BouncyCastle.Asn1.X509.PolicyMappings">
              PolicyMappings V3 extension, described in RFC3280.
              <pre>
@@ -6359,6 +6444,13 @@
             <p>
             The GetEncoded() method in the public keys in the JCE produces a DER
             encoded one of these.</p>
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.X509.SubjectPublicKeyInfo.ParsePublicKey">
+             for when the public key is an encoded object - if the bitstring
+             can't be decoded this routine raises an IOException.
+            
+             @exception IOException - if the bit string doesn't represent a Der
+             encoded object.
         </member>
         <member name="M:Org.BouncyCastle.Asn1.X509.SubjectPublicKeyInfo.GetPublicKey">
              for when the public key is an encoded object - if the bitstring
@@ -6924,6 +7016,12 @@
              passed in.
             
              @return the extension if it's present, null otherwise.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.X509.X509Extensions.GetExtensionParsedValue(Org.BouncyCastle.Asn1.DerObjectIdentifier)">
+             return the parsed value of the extension represented by the object identifier
+             passed in.
+            
+             @return the parsed value of the extension if it's present, null otherwise.
         </member>
         <member name="M:Org.BouncyCastle.Asn1.X509.X509Extensions.ToAsn1Object">
              <pre>
@@ -7535,10 +7633,17 @@
             encode the input data producing a base 64 encoded byte array.
         </member>
         <member name="M:Org.BouncyCastle.Bcpg.ArmoredOutputStream.SetHeader(System.String,System.String)">
-             Set an additional header entry. A null value will clear the entry for name.
+            Set an additional header entry. Any current value(s) under the same name will be
+            replaced by the new one. A null value will clear the entry for name.         *
+            @param name the name of the header entry.
+            @param v the value of the header entry.
+        </member>
+        <member name="M:Org.BouncyCastle.Bcpg.ArmoredOutputStream.AddHeader(System.String,System.String)">
+             Set an additional header entry. The current value(s) will continue to exist together
+             with the new one. Adding a null value has no effect.
             
              @param name the name of the header entry.
-             @param v the value of the header entry.
+             @param value the value of the header entry.
         </member>
         <member name="M:Org.BouncyCastle.Bcpg.ArmoredOutputStream.ResetHeaders">
             Reset the headers to only contain a Version string (if one is present).
@@ -8502,6 +8607,13 @@
             </summary>
             <returns>An <c>IList</c> containing all objects from this factory, in order.</returns>
         </member>
+        <member name="M:Org.BouncyCastle.Bcpg.OpenPgp.PgpObjectFactory.FilterPgpObjects(System.Type)">
+            <summary>
+            Read all available objects, returning only those that are assignable to the specified type.
+            </summary>
+            <param name="type">The type of objects to return. All other objects are ignored.</param>
+            <returns>An <c>IList</c> containing the filtered objects from this factory, in order.</returns>
+        </member>
         <member name="T:Org.BouncyCastle.Bcpg.OpenPgp.PgpOnePassSignature">
             <remarks>A one pass signature object.</remarks>
         </member>
@@ -8622,7 +8734,7 @@
             </returns>
         </member>
         <member name="P:Org.BouncyCastle.Bcpg.OpenPgp.PgpPublicKey.IsMasterKey">
-            <summary>True, if this is a master key.</summary>
+            <summary>True, if this could be a master key.</summary>
         </member>
         <member name="P:Org.BouncyCastle.Bcpg.OpenPgp.PgpPublicKey.Algorithm">
             <summary>The algorithm code associated with the public key.</summary>
@@ -10074,6 +10186,11 @@
         <member name="M:Org.BouncyCastle.Cms.CmsSignedData.GetEncoded">
             return the ASN.1 encoded representation of this object.
         </member>
+        <member name="M:Org.BouncyCastle.Cms.CmsSignedData.GetEncoded(System.String)">
+             return the ASN.1 encoded representation of this object using the specified encoding.
+            
+             @param encoding the ASN.1 encoding format to use ("BER" or "DER").
+        </member>
         <member name="M:Org.BouncyCastle.Cms.CmsSignedData.ReplaceSigners(Org.BouncyCastle.Cms.CmsSignedData,Org.BouncyCastle.Cms.SignerInformationStore)">
              Replace the signerinformation store associated with this
              CmsSignedData object with the new one passed in. You would
@@ -10679,7 +10796,7 @@
         <member name="M:Org.BouncyCastle.Cms.SignerInformation.#ctor(Org.BouncyCastle.Cms.SignerInformation)">
              Protected constructor. In some cases clients have their own idea about how to encode
              the signed attributes and calculate the signature. This constructor is to allow developers
-             to deal with that by extending off the class and overridng methods like getSignedAttributes().
+             to deal with that by extending off the class and overriding e.g. SignedAttributes property.
             
              @param baseInfo the SignerInformation to base this one on.
         </member>
@@ -11137,21 +11254,6 @@
         </member>
         <member name="T:Org.BouncyCastle.Crypto.Agreement.DHStandardGroups">
             <summary>Standard Diffie-Hellman groups from various IETF specifications.</summary>
-        </member>
-        <member name="F:Org.BouncyCastle.Crypto.Agreement.DHStandardGroups.rfc5114_1024_160">
-            <remarks>
-            Existence of a "hidden SNFS" backdoor cannot be ruled out. see https://eprint.iacr.org/2016/961.pdf .
-            </remarks>
-        </member>
-        <member name="F:Org.BouncyCastle.Crypto.Agreement.DHStandardGroups.rfc5114_2048_224">
-            <remarks>
-            Existence of a "hidden SNFS" backdoor cannot be ruled out. see https://eprint.iacr.org/2016/961.pdf .
-            </remarks>
-        </member>
-        <member name="F:Org.BouncyCastle.Crypto.Agreement.DHStandardGroups.rfc5114_2048_256">
-            <remarks>
-            Existence of a "hidden SNFS" backdoor cannot be ruled out. see https://eprint.iacr.org/2016/961.pdf .
-            </remarks>
         </member>
         <member name="T:Org.BouncyCastle.Crypto.Agreement.ECDHBasicAgreement">
              P1363 7.2.1 ECSVDP-DH
@@ -11962,6 +12064,80 @@
              aligned.
         </member>
         <member name="M:Org.BouncyCastle.Crypto.BufferedAeadBlockCipher.Reset">
+            Reset the buffer and cipher. After resetting the object is in the same
+            state as it was after the last init (if there was one).
+        </member>
+        <member name="T:Org.BouncyCastle.Crypto.BufferedAeadCipher">
+            The AEAD ciphers already handle buffering internally, so this class
+            just takes care of implementing IBufferedCipher methods.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.BufferedAeadCipher.Init(System.Boolean,Org.BouncyCastle.Crypto.ICipherParameters)">
+             initialise the cipher.
+            
+             @param forEncryption if true the cipher is initialised for
+              encryption, if false for decryption.
+             @param param the key and other data required by the cipher.
+             @exception ArgumentException if the parameters argument is
+             inappropriate.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.BufferedAeadCipher.GetBlockSize">
+             return the blocksize for the underlying cipher.
+            
+             @return the blocksize for the underlying cipher.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.BufferedAeadCipher.GetUpdateOutputSize(System.Int32)">
+             return the size of the output buffer required for an update
+             an input of len bytes.
+            
+             @param len the length of the input.
+             @return the space required to accommodate a call to update
+             with len bytes of input.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.BufferedAeadCipher.GetOutputSize(System.Int32)">
+             return the size of the output buffer required for an update plus a
+             doFinal with an input of len bytes.
+            
+             @param len the length of the input.
+             @return the space required to accommodate a call to update and doFinal
+             with len bytes of input.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.BufferedAeadCipher.ProcessByte(System.Byte,System.Byte[],System.Int32)">
+             process a single byte, producing an output block if necessary.
+            
+             @param in the input byte.
+             @param out the space for any output that might be produced.
+             @param outOff the offset from which the output will be copied.
+             @return the number of output bytes copied to out.
+             @exception DataLengthException if there isn't enough space in out.
+             @exception InvalidOperationException if the cipher isn't initialised.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.BufferedAeadCipher.ProcessBytes(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+             process an array of bytes, producing output if necessary.
+            
+             @param in the input byte array.
+             @param inOff the offset at which the input data starts.
+             @param len the number of bytes to be copied out of the input array.
+             @param out the space for any output that might be produced.
+             @param outOff the offset from which the output will be copied.
+             @return the number of output bytes copied to out.
+             @exception DataLengthException if there isn't enough space in out.
+             @exception InvalidOperationException if the cipher isn't initialised.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.BufferedAeadCipher.DoFinal(System.Byte[],System.Int32)">
+             Process the last block in the buffer.
+            
+             @param out the array the block currently being held is copied into.
+             @param outOff the offset at which the copying starts.
+             @return the number of output bytes copied to out.
+             @exception DataLengthException if there is insufficient space in out for
+             the output, or the input is not block size aligned and should be.
+             @exception InvalidOperationException if the underlying cipher is not
+             initialised.
+             @exception InvalidCipherTextException if padding is expected and not found.
+             @exception DataLengthException if the input is not block size
+             aligned.
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.BufferedAeadCipher.Reset">
             Reset the buffer and cipher. After resetting the object is in the same
             state as it was after the last init (if there was one).
         </member>
@@ -13708,11 +13884,6 @@
              @exception ArgumentException if the params argument is
              inappropriate.
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Engines.NoekeonEngine.setKey(System.Byte[])">
-             Re-key the cipher.
-            
-             @param  key  the key to be used
-        </member>
         <member name="T:Org.BouncyCastle.Crypto.Engines.NullEngine">
             The no-op engine that just copies bytes through, irrespective of whether encrypting and decrypting.
             Provided for the sake of completeness.
@@ -14156,14 +14327,6 @@
             Creates a Salsa20 engine with a specific number of rounds.
             </summary>
             <param name="rounds">the number of rounds (must be an even number).</param>
-        </member>
-        <member name="M:Org.BouncyCastle.Crypto.Engines.Salsa20Engine.R(System.UInt32,System.Int32)">
-             Rotate left
-            
-             @param   x   value to rotate
-             @param   y   amount to rotate x
-            
-             @return  rotated x
         </member>
         <member name="T:Org.BouncyCastle.Crypto.Engines.SeedEngine">
             Implementation of the SEED algorithm as described in RFC 4009
@@ -15453,6 +15616,26 @@
         <member name="M:Org.BouncyCastle.Crypto.IDigest.Reset">
             reset the digest back to it's initial state.
         </member>
+        <member name="T:Org.BouncyCastle.Crypto.IDigestFactory">
+            <summary>
+            Base interface for operator factories that create stream-based digest calculators.
+            </summary>   
+        </member>
+        <member name="P:Org.BouncyCastle.Crypto.IDigestFactory.AlgorithmDetails">
+            <summary>The algorithm details object for calculators made by this factory.</summary>
+        </member>
+        <member name="P:Org.BouncyCastle.Crypto.IDigestFactory.DigestLength">
+            <summary>Return the size of the digest associated with this factory.</summary>
+            <returns>The length of the digest produced by this calculators from this factory in bytes.</returns>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.IDigestFactory.CreateCalculator">
+            <summary>
+            Create a stream calculator for the digest associated with this factory. The stream
+            calculator is used for the actual operation of entering the data to be digested
+            and producing the digest block.
+            </summary>
+            <returns>A calculator producing an IBlockResult with the final digest in it.</returns>
+        </member>
         <member name="T:Org.BouncyCastle.Crypto.IDsa">
             interface for classes implementing the Digital Signature Algorithm
         </member>
@@ -16638,39 +16821,52 @@
             cipher.
         </member>
         <member name="T:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher">
-            <summary>
-            A block cipher mode that includes authenticated encryption with a streaming mode
-            and optional associated data.</summary>
-            <see cref="T:Org.BouncyCastle.Crypto.Parameters.AeadParameters"/>
+            <summary>An IAeadCipher based on an IBlockCipher.</summary>
         </member>
-        <member name="P:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.AlgorithmName">
-            <summary>The name of the algorithm this cipher implements.</summary>
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.GetBlockSize">
+            <returns>The block size for this cipher, in bytes.</returns>
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.GetUnderlyingCipher">
             <summary>The block cipher underlying this algorithm.</summary>
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.Init(System.Boolean,Org.BouncyCastle.Crypto.ICipherParameters)">
+        <member name="T:Org.BouncyCastle.Crypto.Modes.IAeadCipher">
+            <summary>
+            A cipher mode that includes authenticated encryption with a streaming mode and optional
+            associated data.
+            </summary>
+            <remarks>
+            Implementations of this interface may operate in a packet mode (where all input data is
+            buffered and processed during the call to DoFinal, or in a streaming mode (where output
+            data is incrementally produced with each call to ProcessByte or ProcessBytes. This is
+            important to consider during decryption: in a streaming mode, unauthenticated plaintext
+            data may be output prior to the call to DoFinal that results in an authentication failure.
+            The higher level protocol utilising this cipher must ensure the plaintext data is handled
+            appropriately until the end of data is reached and the entire ciphertext is authenticated.
+            </remarks>
+            <see cref="T:Org.BouncyCastle.Crypto.Parameters.AeadParameters"/>
+        </member>
+        <member name="P:Org.BouncyCastle.Crypto.Modes.IAeadCipher.AlgorithmName">
+            <summary>The name of the algorithm this cipher implements.</summary>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.Init(System.Boolean,Org.BouncyCastle.Crypto.ICipherParameters)">
             <summary>Initialise the cipher.</summary>
             <remarks>Parameter can either be an AeadParameters or a ParametersWithIV object.</remarks>
             <param name="forEncryption">Initialise for encryption if true, for decryption if false.</param>
             <param name="parameters">The key or other data required by the cipher.</param>
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.GetBlockSize">
-            <returns>The block size for this cipher, in bytes.</returns>
-        </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.ProcessAadByte(System.Byte)">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.ProcessAadByte(System.Byte)">
             <summary>Add a single byte to the associated data check.</summary>
             <remarks>If the implementation supports it, this will be an online operation and will not retain the associated data.</remarks>
             <param name="input">The byte to be processed.</param>
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.ProcessAadBytes(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.ProcessAadBytes(System.Byte[],System.Int32,System.Int32)">
             <summary>Add a sequence of bytes to the associated data check.</summary>
             <remarks>If the implementation supports it, this will be an online operation and will not retain the associated data.</remarks>
             <param name="inBytes">The input byte array.</param>
             <param name="inOff">The offset into the input array where the data to be processed starts.</param>
             <param name="len">The number of bytes to be processed.</param>
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.ProcessByte(System.Byte,System.Byte[],System.Int32)">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.ProcessByte(System.Byte,System.Byte[],System.Int32)">
              Encrypt/decrypt a single byte.
             
              @param input the byte to be processed.
@@ -16679,7 +16875,7 @@
              @return the number of bytes written to out.
              @exception DataLengthException if the output buffer is too small.
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.ProcessBytes(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.ProcessBytes(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
              Process a block of bytes from in putting the result into out.
             
              @param inBytes the input byte array.
@@ -16690,7 +16886,7 @@
              @return the number of bytes written to out.
              @exception DataLengthException if the output buffer is too small.
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.DoFinal(System.Byte[],System.Int32)">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.DoFinal(System.Byte[],System.Int32)">
              Finish the operation either appending or verifying the MAC at the end of the data.
             
              @param outBytes space for any resulting output data.
@@ -16699,12 +16895,12 @@
              @throws InvalidOperationException if the cipher is in an inappropriate state.
              @throws InvalidCipherTextException if the MAC fails to match.
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.GetMac">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.GetMac">
              Return the value of the MAC associated with the last stream processed.
             
              @return MAC for plaintext data.
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.GetUpdateOutputSize(System.Int32)">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.GetUpdateOutputSize(System.Int32)">
              Return the size of the output buffer required for a ProcessBytes
              an input of len bytes.
             
@@ -16712,7 +16908,7 @@
              @return the space required to accommodate a call to ProcessBytes
              with len bytes of input.
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.GetOutputSize(System.Int32)">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.GetOutputSize(System.Int32)">
              Return the size of the output buffer required for a ProcessBytes plus a
              DoFinal with an input of len bytes.
             
@@ -16720,7 +16916,7 @@
              @return the space required to accommodate a call to ProcessBytes and DoFinal
              with len bytes of input.
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadBlockCipher.Reset">
+        <member name="M:Org.BouncyCastle.Crypto.Modes.IAeadCipher.Reset">
             <summary>
             Reset the cipher to the same state as it was after the last init (if there was one).
             </summary>
@@ -17423,6 +17619,23 @@
         </member>
         <member name="T:Org.BouncyCastle.Crypto.Parameters.Iso18033KdfParameters">
             parameters for Key derivation functions for ISO-18033
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Parameters.KdfCounterParameters.#ctor(System.Byte[],System.Byte[],System.Int32)">
+            <summary>
+            Base constructor - suffix fixed input data only.
+            </summary>
+            <param name="ki">the KDF seed</param>
+            <param name="fixedInputDataCounterSuffix">fixed input data to follow counter.</param>
+            <param name="r">length of the counter in bits</param>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Parameters.KdfCounterParameters.#ctor(System.Byte[],System.Byte[],System.Byte[],System.Int32)">
+            <summary>
+            Base constructor - prefix and suffix fixed input data.
+            </summary>
+            <param name="ki">the KDF seed</param>
+            <param name="fixedInputDataCounterPrefix">fixed input data to precede counter</param>
+            <param name="fixedInputDataCounterSuffix">fixed input data to follow counter.</param>
+            <param name="r">length of the counter in bits.</param>
         </member>
         <member name="T:Org.BouncyCastle.Crypto.Parameters.KdfParameters">
             parameters for Key derivation functions for IEEE P1363a
@@ -18706,6 +18919,9 @@
         <member name="M:Org.BouncyCastle.Crypto.Tls.AbstractTlsEncryptionCredentials.DecryptPreMasterSecret(System.Byte[])">
             <exception cref="T:System.IO.IOException"></exception>
         </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.AbstractTlsPeer.Cancel">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.AbstractTlsSignerCredentials.GenerateCertificateSignature(System.Byte[])">
             <exception cref="T:System.IO.IOException"></exception>
         </member>
@@ -19133,9 +19349,6 @@
             <exception cref="T:System.IO.IOException"/>
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.DatagramTransport.Send(System.Byte[],System.Int32,System.Int32)">
-            <exception cref="T:System.IO.IOException"/>
-        </member>
-        <member name="M:Org.BouncyCastle.Crypto.Tls.DatagramTransport.Close">
             <exception cref="T:System.IO.IOException"/>
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.DefaultTlsAgreementCredentials.GenerateAgreement(Org.BouncyCastle.Crypto.AsymmetricKeyParameter)">
@@ -19783,6 +19996,9 @@
              @param tlsClient The {@link TlsClient} to use for the handshake.
              @throws IOException If in blocking mode and handshake was not successful.
         </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.TlsCloseable.Close">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
         <member name="P:Org.BouncyCastle.Crypto.Tls.TlsContext.ResumableSession">
             Used to get the resumable session, if any, used by this connection. Only available after the
             handshake has successfully completed.
@@ -20035,6 +20251,18 @@
         <member name="M:Org.BouncyCastle.Crypto.Tls.TlsNullCipher.DecodeCiphertext(System.Int64,System.Byte,System.Byte[],System.Int32,System.Int32)">
             <exception cref="T:System.IO.IOException"></exception>
         </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.TlsPeer.Cancel">
+            <exception cref="T:System.IO.IOException"/>
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.TlsPeer.GetHandshakeTimeoutMillis">
+            <summary>
+            Specify the timeout, in milliseconds, to use for the complete handshake process.
+            </summary>
+            <remarks>
+            Negative values are not allowed. A timeout of zero means an infinite timeout (i.e. the
+            handshake will never time out). NOTE: Currently only respected by DTLS protocols.
+            </remarks>
+        </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.TlsPeer.RequiresExtendedMasterSecret">
             <summary>
             This implementation supports RFC 7627 and will always negotiate the extended_master_secret
@@ -20138,10 +20366,13 @@
             Should be called in non-blocking mode when the input data reaches EOF.
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.TlsProtocol.OfferInput(System.Byte[])">
+            Equivalent to <code>OfferInput(input, 0, input.length)</code>
+            @see TlsProtocol#OfferInput(byte[], int, int)
+            @param input The input buffer to offer
+            @throws IOException If an error occurs while decrypting or processing a record
+        </member>
+        <member name="M:Org.BouncyCastle.Crypto.Tls.TlsProtocol.OfferInput(System.Byte[],System.Int32,System.Int32)">
             Offer input from an arbitrary source. Only allowed in non-blocking mode.<br/>
-            <br/>
-            After this method returns, the input buffer is "owned" by this object. Other code
-            must not attempt to do anything with it.<br/>
             <br/>
             This method will decrypt and process all records that are fully available.
             If only part of a record is available, the buffer will be retained until the
@@ -20153,6 +20384,8 @@
             You should always check to see if there is any available output after calling
             this method by calling {@link #getAvailableOutputBytes()}.
             @param input The input buffer to offer
+            @param inputOff The offset within the input buffer that input begins
+            @param inputLen The number of bytes of input being offered
             @throws IOException If an error occurs while decrypting or processing a record
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.TlsProtocol.GetAvailableInputBytes">
@@ -21320,8 +21553,9 @@
             @deprecated per-point compression property will be removed, refer {@link #getEncoded(bool)}
         </member>
         <member name="M:Org.BouncyCastle.Math.EC.ECAlgorithms.ReferenceMultiply(Org.BouncyCastle.Math.EC.ECPoint,Org.BouncyCastle.Math.BigInteger)">
-            Simple shift-and-add multiplication. Serves as reference implementation
-            to verify (possibly faster) implementations, and for very small scalars.
+            Simple shift-and-add multiplication. Serves as reference implementation to verify (possibly
+            faster) implementations, and for very small scalars. CAUTION: This implementation is NOT
+            constant-time in any way. It is only intended to be used for diagnostics.
             
             @param p
                        The point to multiply.
@@ -21377,7 +21611,9 @@
             belong to this <code>ECCurve</code> instance, and MUST already be normalized.
         </member>
         <member name="M:Org.BouncyCastle.Math.EC.ECCurve.GetMultiplier">
-            Sets the default <code>ECMultiplier</code>, unless already set. 
+             Sets the default <code>ECMultiplier</code>, unless already set.
+            
+             We avoid locking for performance reasons, so there is no uniqueness guarantee.
         </member>
         <member name="M:Org.BouncyCastle.Math.EC.ECCurve.DecodePoint(System.Byte[])">
             Decode a point on this curve from its ASN.1 encoding. The different
@@ -21761,12 +21997,6 @@
             @return A new <code>ECPoint</code> which equals <code>this</code>
             multiplied by <code>k</code>.
         </member>
-        <member name="M:Org.BouncyCastle.Math.EC.Multiplier.WNafL2RMultiplier.GetWindowSize(System.Int32)">
-            Determine window width to use for a scalar multiplication of the given size.
-            
-            @param bits the bit-length of the scalar to multiply by
-            @return the window size to use
-        </member>
         <member name="T:Org.BouncyCastle.Math.EC.Multiplier.WNafPreCompInfo">
             Class holding precomputation data for the WNAF (Window Non-Adjacent Form)
             algorithm.
@@ -21801,11 +22031,26 @@
             @param bits the bit-length of the scalar to multiply by
             @return the window size to use
         </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Multiplier.WNafUtilities.GetWindowSize(System.Int32,System.Int32)">
+            Determine window width to use for a scalar multiplication of the given size.
+            
+            @param bits the bit-length of the scalar to multiply by
+            @param maxWidth the maximum window width to return 
+            @return the window size to use
+        </member>
         <member name="M:Org.BouncyCastle.Math.EC.Multiplier.WNafUtilities.GetWindowSize(System.Int32,System.Int32[])">
             Determine window width to use for a scalar multiplication of the given size.
             
             @param bits the bit-length of the scalar to multiply by
             @param windowSizeCutoffs a monotonically increasing list of bit sizes at which to increment the window width
+            @return the window size to use
+        </member>
+        <member name="M:Org.BouncyCastle.Math.EC.Multiplier.WNafUtilities.GetWindowSize(System.Int32,System.Int32[],System.Int32)">
+            Determine window width to use for a scalar multiplication of the given size.
+            
+            @param bits the bit-length of the scalar to multiply by
+            @param windowSizeCutoffs a monotonically increasing list of bit sizes at which to increment the window width
+            @param maxWidth the maximum window width to return 
             @return the window size to use
         </member>
         <member name="T:Org.BouncyCastle.Math.EC.Multiplier.WTauNafMultiplier">
@@ -23215,6 +23460,16 @@
                      min and max IP address of the first/second IP address and its
                      subnet mask.
         </member>
+        <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.IsIPConstrained(System.Byte[],System.Byte[])">
+             Checks if the IP address <code>ip</code> is constrained by
+             <code>constraint</code>.
+            
+             @param constraint The constraint. This is an IP address concatenated with
+                               its subnetmask.
+             @param ip         The IP address.
+             @return <code>true</code> if constrained, <code>false</code>
+                     otherwise.
+        </member>
         <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.CheckPermittedIP(Org.BouncyCastle.Utilities.Collections.ISet,System.Byte[])">
              Checks if the IP <code>ip</code> is included in the permitted ISet
              <code>permitted</code>.
@@ -23225,7 +23480,7 @@
              @throws PkixNameConstraintValidatorException
                       if the IP is not permitted.
         </member>
-        <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.checkExcludedIP(Org.BouncyCastle.Utilities.Collections.ISet,System.Byte[])">
+        <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.CheckExcludedIP(Org.BouncyCastle.Utilities.Collections.ISet,System.Byte[])">
              Checks if the IP <code>ip</code> is included in the excluded ISet
              <code>excluded</code>.
             
@@ -23235,17 +23490,7 @@
              @throws PkixNameConstraintValidatorException
                       if the IP is excluded.
         </member>
-        <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.IsIPConstrained(System.Byte[],System.Byte[])">
-             Checks if the IP address <code>ip</code> is constrained by
-             <code>constraint</code>.
-            
-             @param ip         The IP address.
-             @param constraint The constraint. This is an IP address concatenated with
-                               its subnetmask.
-             @return <code>true</code> if constrained, <code>false</code>
-                     otherwise.
-        </member>
-        <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.unionEmail(System.String,System.String,Org.BouncyCastle.Utilities.Collections.ISet)">
+        <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.UnionEmail(System.String,System.String,Org.BouncyCastle.Utilities.Collections.ISet)">
              The common part of <code>email1</code> and <code>email2</code> is
              added to the union <code>union</code>. If <code>email1</code> and
              <code>email2</code> have nothing in common they are added both.
@@ -23254,7 +23499,7 @@
              @param email2 Email address constraint 2.
              @param union  The union.
         </member>
-        <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.intersectEmail(System.String,System.String,Org.BouncyCastle.Utilities.Collections.ISet)">
+        <member name="M:Org.BouncyCastle.Pkix.PkixNameConstraintValidator.IntersectEmail(System.String,System.String,Org.BouncyCastle.Utilities.Collections.ISet)">
              The most restricting part from <code>email1</code> and
              <code>email2</code> is added to the intersection <code>intersect</code>.
             
@@ -24191,6 +24436,11 @@
             
              @throws IOException if encoding fails.
         </member>
+        <member name="M:Org.BouncyCastle.Tsp.TimeStampToken.GetEncoded(System.String)">
+             return the ASN.1 encoded representation of this object using the specified encoding.
+            
+             @param encoding the ASN.1 encoding format to use ("BER" or "DER").
+        </member>
         <member name="M:Org.BouncyCastle.Tsp.TimeStampTokenGenerator.#ctor(Org.BouncyCastle.Crypto.AsymmetricKeyParameter,Org.BouncyCastle.X509.X509Certificate,System.String,System.String)">
             basic creation - only the default attributes will be included here.
         </member>
@@ -24274,15 +24524,28 @@
         <member name="M:Org.BouncyCastle.Utilities.BigIntegers.AsUnsignedByteArray(Org.BouncyCastle.Math.BigInteger)">
              Return the passed in value as an unsigned byte array.
             
-             @param value value to be converted.
+             @param value the value to be converted.
              @return a byte array without a leading zero byte if present in the signed encoding.
         </member>
         <member name="M:Org.BouncyCastle.Utilities.BigIntegers.AsUnsignedByteArray(System.Int32,Org.BouncyCastle.Math.BigInteger)">
-             Return the passed in value as an unsigned byte array of specified length, zero-extended as necessary.
+            Return the passed in value as an unsigned byte array of the specified length, padded with
+            leading zeros as necessary.
+            @param length the fixed length of the result.
+            @param n the value to be converted.
+            @return a byte array padded to a fixed length with leading zeros.
+        </member>
+        <member name="M:Org.BouncyCastle.Utilities.BigIntegers.AsUnsignedByteArray(Org.BouncyCastle.Math.BigInteger,System.Byte[],System.Int32,System.Int32)">
+             Write the passed in value as unsigned bytes to the specified buffer range, padded with
+             leading zeros as necessary.
             
-             @param length desired length of result array.
-             @param n value to be converted.
-             @return a byte array of specified length, with leading zeroes as necessary given the size of n.
+             @param value
+                        the value to be converted.
+             @param buf
+                        the buffer to which the value is written.
+             @param off
+                        the start offset in array <code>buf</code> at which the data is written.
+             @param len
+                        the fixed length of data written (possibly padded with leading zeros).
         </member>
         <member name="M:Org.BouncyCastle.Utilities.BigIntegers.CreateRandomBigInteger(System.Int32,Org.BouncyCastle.Security.SecureRandom)">
             <summary>
@@ -24478,6 +24741,18 @@
              whitespace characters will be ignored.
             
              @return the number of bytes produced.
+        </member>
+        <member name="M:Org.BouncyCastle.Utilities.Encoders.Hex.DecodeStrict(System.String)">
+             Decode the hexadecimal-encoded string strictly i.e. any non-hexadecimal characters will be
+             considered an error.
+            
+             @return a byte array representing the decoded data.
+        </member>
+        <member name="M:Org.BouncyCastle.Utilities.Encoders.Hex.DecodeStrict(System.String,System.Int32,System.Int32)">
+             Decode the hexadecimal-encoded string strictly i.e. any non-hexadecimal characters will be
+             considered an error.
+            
+             @return a byte array representing the decoded data.
         </member>
         <member name="M:Org.BouncyCastle.Utilities.Encoders.HexEncoder.Encode(System.Byte[],System.Int32,System.Int32,System.IO.Stream)">
              encode the input data producing a Hex output stream.
