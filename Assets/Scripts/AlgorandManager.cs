@@ -10,6 +10,9 @@ using Algorand.Client;
 using Algorand.V2.Model;
 using Account = Algorand.Account;
 
+// extension awaiter/methods can be used by this namespace
+using Cysharp.Threading.Tasks;
+
 public class AlgorandManager : Singleton<AlgorandManager>
 {
     [SerializeField]
@@ -56,13 +59,6 @@ public class AlgorandManager : Singleton<AlgorandManager>
             var supply = algodApiInstance.GetSupply();
             Debug.Log("Total Algorand Supply: " + supply.TotalMoney);
             Debug.Log("Online Algorand Supply: " + supply.OnlineMoney);
-            /*
-             * 
-             * //This will execute MyMethod on the main Unity thread
-               var task = UnityTaskUtil.RunOnUnityThreadAsync(MyMethod);
-               //A task is returned that you can await
-               await task;
-             */
             var task = algodApiInstance.GetSupplyAsync();
             task.Wait();
             Debug.Log("Total Algorand Supply(Async): " + task.Result.TotalMoney);
