@@ -105,41 +105,6 @@ public class AlgorandManager : Singleton<AlgorandManager>
         yield return null;
         AlgodApi algodApiInstance = new AlgodApi(ALGOD_API_ADDR, ALGOD_API_TOKEN);
 
-        /*
-        try
-        {
-            var supply = algodApiInstance.GetSupply();
-            Debug.Log("Total Algorand Supply: " + supply.TotalMoney);
-            Debug.Log("Online Algorand Supply: " + supply.OnlineMoney);
-            //var task = await algodApiInstance.GetSupplyAsync();
-            //task.Wait();
-            //Debug.Log("Total Algorand Supply(Async): " + task.Result.TotalMoney);
-        }
-        catch (ApiException e)
-        {
-            Debug.LogError("Exception when calling algod#getSupply:" + e.Message);
-        }
-        */
-
-        //var accountInfo = algodApiInstance.AccountInformation(src.Address.ToString());
-        //Debug.Log(string.Format("Account Balance: {0} microAlgos", accountInfo.Amount));
-
-        /*
-        try
-        {
-            var trans = algodApiInstance.TransactionParams();
-            //var lr = trans.LastRound;
-            //var block = algodApiInstance.GetBlock(lr);
-
-            //Debug.Log("Lastround: " + trans.LastRound.ToString());
-            //Debug.Log("Block txns: " + block.Block.ToString());
-        }
-        catch (ApiException e)
-        {
-            Debug.LogError("Exception when calling algod#getSupply:" + e.Message);
-        }
-        */
-
         TransactionParametersResponse transParams;
         try
         {
