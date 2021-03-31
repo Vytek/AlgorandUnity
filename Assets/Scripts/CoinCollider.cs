@@ -2,13 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityToolbag;
+using MHLab.Utilities;
 
 public class CoinCollider : MonoBehaviour
 {
+    public BackgroundTasksProcessor Processor;
+    
+    public GameObject Coin;
+    
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(AlgorandManager.Instance.GetPlayerName());
+        Debug.Log("Player Name: "+AlgorandManager.Instance.GetPlayerName());
+    }
+
+    void Update()
+    {
+        if (!Processor.IsReady)
+        {
+            return;
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -24,7 +37,7 @@ public class CoinCollider : MonoBehaviour
         //Star Algorand Transaction
         //AlgorandManager.Instance.PayPlayerWithAlgorand();
         //USING DISPATCHER
-        UnityMainThreadDispatcher.Instance().Enqueue(AlgorandManager.Instance.PlayerWithAlgorandLoopCoroutine()); //VERY GOOD!
+        //UnityMainThreadDispatcher.Instance().Enqueue(AlgorandManager.Instance.PlayerWithAlgorandLoopCoroutine()); //VERY GOOD!
         //UnityMainThreadDispatcher.Instance().EnqueueAsync(() => AlgorandManager.Instance.PayPlayerwithAlgorandFunction()); //NOT GOOD!
         //UnityMainThreadDispatcher.Instance().EnqueueAsync(() => AlgorandManager.Instance.PayPlayerWithAlgorand()); //NOT GOOD!
         //Dispatcher.InvokeAsync(() => AlgorandManager.Instance.PayPlayerwithAlgorandFunction()); //TRY?
@@ -35,5 +48,18 @@ public class CoinCollider : MonoBehaviour
             AlgorandManager.Instance.PayPlayerwithAlgorandFunction();
         });
         */
+
+        //Using BackgroundTasksProcessor
+        Processor.Process(
+            () =>
+            {
+                AlgorandManager.Instance.PayPlayerwithAlgorandFunction();
+                return "Algorand OK";
+            },
+            (result) =>
+            {
+                Debug.Log(result);
+            }
+        );
     }
 }
