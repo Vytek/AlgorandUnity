@@ -3,7 +3,7 @@
  
 # How to install Unity3D
 
-In this example we will use Unity 3D Version 2019.4.14f1 Personal
+In this example we will use Unity 3D Version 2019.4.14f1 Personal Edition.
 
 To download and install Unity, please see: [https://store.unity.com/download-nuo](https://store.unity.com/download-nuo)
 
@@ -13,12 +13,8 @@ We also use the Algorand SDK .NET based on this Github repo: [https://github.com
 * https://assetstore.unity.com/packages/2d/textures-materials/gridbox-prototype-materials-129127
 * https://github.com/Pheffers/UnityCameraExample
 * https://github.com/UnityCommunity/UnitySingleton
-* https://github.com/muckSponge/UnityAsync
-* https://github.com/neuecc/UniRx
-* https://github.com/Cysharp/UniTask
-* https://github.com/PimDeWitte/UnityMainThreadDispatcher
-* https://github.com/OneBitSoftware/Unity-UniRxDispatcher/blob/master/Assets/Scripts/RxDispatcher.cs
-* https://github.com/nickgravelyn/UnityToolbag/blob/main/Dispatcher/Dispatcher.cs
+
+_*Special thanks to ManHunter for his “A little and simple background tasks processor for Unity” created for this demo (MIT License).*_
 
 In the example we use [Purestack](https://www.purestake.com/networks/algorand/) Algorand Public Node in TESTNET. It is more convenient for a possible final application in Unity to use a remote system such as Purestack by creating the various Algorand transactions locally via the .NET SDK.
  
@@ -33,6 +29,6 @@ In the example we use [Purestack](https://www.purestake.com/networks/algorand/) 
  
  ## Licenses
 
- - **Only the code in `Assets/Scripts` is released under the MIT license**
- - Other code libraries in `Assets/Libraries` all come with their own licenses
- - Any binary resources are more or less there on a "fair use" basis, **don't assume that you can just copy and use them**
+ - **Only the code in `Assets/Scripts` is released under the MIT license**..
+ - Other code libraries in `Assets/Thirparties` all come with their own licenses.
+ - Any binary resources are more or less there on a "fair use" basis, **don't assume that you can just copy and use them**.
