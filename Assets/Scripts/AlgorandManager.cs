@@ -73,8 +73,8 @@ public class AlgorandManager : Singleton<AlgorandManager>
         {
             var id = Utils.SubmitTransaction(algodApiInstance, signedTx);
             Debug.Log("Successfully sent tx with id: " + id.TxId);
-            //var resp = Utils.WaitTransactionToComplete(algodApiInstance, id.TxId);
-            //Debug.Log("Confirmed Round is: " + resp.ConfirmedRound);
+            var resp = Utils.WaitTransactionToComplete(algodApiInstance, id.TxId);
+            Debug.Log("Confirmed Round is: " + resp.ConfirmedRound);
         }
         catch (ApiException e)
         {

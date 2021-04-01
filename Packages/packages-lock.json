@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.gameframe.async": {
-      "version": "https://github.com/coryleach/UnityAsync.git#1.0.4",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "cb26ffeffd09c641819a124a4924e3da5eb0341b"
-    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
