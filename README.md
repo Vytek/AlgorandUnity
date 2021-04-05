@@ -14,7 +14,7 @@ We also use the Algorand SDK .NET based on this Github repo: [https://github.com
 * https://github.com/Pheffers/UnityCameraExample
 * https://github.com/UnityCommunity/UnitySingleton
 
-_*Special thanks to ManHunter for his “A little and simple background tasks processor for Unity” created for this demo (MIT License).*_
+_*Special thanks to ManHunter for his “A little and simple background tasks processor for Unity” created for this demo (MIT License). (https://github.com/manhunterita)*_
 
 In the example we use [Purestake](https://www.purestake.com/networks/algorand/) Algorand Public Node in TESTNET. It is more convenient for a possible final application in Unity to use a remote system such as Purestake by creating the various Algorand transactions locally via the .NET SDK.
  
