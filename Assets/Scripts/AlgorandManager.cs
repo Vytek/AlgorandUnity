@@ -60,6 +60,7 @@ public class AlgorandManager : Singleton<AlgorandManager>
         }
         catch (ApiException e)
         {
+            Debug.LogError("Could not get params: "+ e.Message);
             throw new Exception("Could not get params", e);
         }
         var amount = Utils.AlgosToMicroalgos(0.01);
