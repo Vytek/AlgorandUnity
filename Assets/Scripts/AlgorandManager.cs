@@ -43,7 +43,7 @@ public class AlgorandManager : Singleton<AlgorandManager>
             ALGOD_API_ADDR = "http://" + ALGOD_API_ADDR;
         }
 
-        string ALGOD_API_TOKEN = "IkwGyG4qWg8W6VegMFfCa3iIIj06wi0x6Vn7FO5j";
+        string ALGOD_API_TOKEN = "Your API Key Here";
         string SRC_ACCOUNT = "typical permit hurdle hat song detail cattle merge oxygen crowd arctic cargo smooth fly rice vacuum lounge yard frown predict west wife latin absent cup";
         string DEST_ADDR = "KV2XGKMXGYJ6PWYQA5374BYIQBL3ONRMSIARPCFCJEAMAHQEVYPB7PL3KU";
         if (!Address.IsValid(DEST_ADDR))
