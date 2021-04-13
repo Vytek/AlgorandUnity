@@ -13,6 +13,7 @@ We also use the Algorand SDK .NET based on this Github repo: [https://github.com
 * https://assetstore.unity.com/packages/2d/textures-materials/gridbox-prototype-materials-129127
 * https://github.com/Pheffers/UnityCameraExample
 * https://github.com/UnityCommunity/UnitySingleton
+* https://assetstore.unity.com/packages/tools/gui/screen-logger-49114
 
 _*Special thanks to ManHunter for his “A little and simple background tasks processor for Unity” created for this demo (MIT License). (https://github.com/manhunterita)*_
 
