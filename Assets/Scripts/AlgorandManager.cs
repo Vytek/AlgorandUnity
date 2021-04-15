@@ -85,6 +85,59 @@ public class AlgorandManager : Singleton<AlgorandManager>
         Debug.Log("Algorand transaction to Player completed.");
     }
 
+    public void PayPlayerwithAlgorandASAFunction()
+    {
+        //Receiver (TESTNET):F52PF5E2GNMUZN2JYPXS4ANMXUY23F6RVE6VEJH4ZZYHMDUZPYUFKWYX6Q
+        //Private Key: delay fine rich provide finish later notice once regret voice trick hard split solution fitness wall horn render blanket thunder lamp gym organ abstract detect
+        //For project: shorturl.at/ghzKW
+        Debug.Log("Starting Algorand ASA Transaction.");
+        string ALGOD_API_ADDR = "https://testnet-algorand.api.purestake.io/ps2";
+        if (ALGOD_API_ADDR.IndexOf("//") == -1)
+        {
+            ALGOD_API_ADDR = "http://" + ALGOD_API_ADDR;
+        }
+
+        string ALGOD_API_TOKEN = "IkwGyG4qWg8W6VegMFfCa3iIIj06wi0x6Vn7FO5j";
+        string SRC_ACCOUNT = "typical permit hurdle hat song detail cattle merge oxygen crowd arctic cargo smooth fly rice vacuum lounge yard frown predict west wife latin absent cup";
+        string DEST_ADDR = "F52PF5E2GNMUZN2JYPXS4ANMXUY23F6RVE6VEJH4ZZYHMDUZPYUFKWYX6Q";
+        if (!Address.IsValid(DEST_ADDR))
+            Debug.LogError("The address " + DEST_ADDR + " is not valid!");
+        Account src = new Account(SRC_ACCOUNT);
+        Debug.Log("My account address is:" + src.Address.ToString());
+
+        AlgodApi algodApiInstance = new AlgodApi(ALGOD_API_ADDR, ALGOD_API_TOKEN);
+
+        TransactionParametersResponse transParams;
+        try
+        {
+            transParams = algodApiInstance.TransactionParams();
+        }
+        catch (ApiException e)
+        {
+            Debug.LogError("Could not get params: "+ e.Message);
+            throw new Exception("Could not get params", e);
+        }
+        //var transParams = algodApiInstance.TransactionParams();
+        ulong assetAmount = 1;
+        long aid = 15187601; //AssetID https://goalseeker.purestake.io/algorand/testnet/asset/15187601
+        var tx = Utils.GetTransferAssetTransaction(src.Address, new Address(DEST_ADDR), aid, assetAmount, transParams, null, "transfer message");
+
+        var signedTx = src.SignTransaction(tx);
+        try
+        {
+            var id = Utils.SubmitTransaction(algodApiInstance, signedTx);
+            Debug.Log("Transaction ID: " + id.TxId);
+            Debug.Log("Confirmed Round is: " +
+                Utils.WaitTransactionToComplete(algodApiInstance, id.TxId).ConfirmedRound);
+        }
+        catch (Exception e)
+        {
+            //e.printStackTrace();
+            Debug.LogError(e.Message);
+            return;
+        }
+    }
+
     //Coroutines
     public IEnumerator PlayerWithAlgorandLoopCoroutine()
     {
